@@ -7,33 +7,63 @@ namespace BomberMan
     {
         Image imgInfo, imgFloor;
         Audio audio;
-        Font font;
+        Font font40, font28;
         Level level;
         IntPtr fontLives, fontTime;
         Sdl.SDL_Color white;
-
         int lives;
+        // initializing time
+        int min = 3;
+        int sec = 0;
+        string time;
+
 
 
         public GameScreen(Hardware hardware) : base(hardware)
         {
-            font = new Font("font/prince_valiant.ttf", 28);
-            imgInfo = new Image("imgs/InfoPanel.png", 800, 75);
-            imgFloor = new Image("imgs/Floor.png", 800, 700);
-            level = new Level("levels/level1.txt");
+            // preload text
+            font28 = new Font("font/Joystix.ttf", 28);
+            font40 = new Font("font/Joystix.ttf", 28);
+            fontLives = SdlTtf.TTF_RenderText_Solid(font28.GetFontType(),
+                                lives.ToString(), white);
+            //fontTime = SdlTtf.TTF_RenderText_Solid(font40.GetFontType(),
+                                //time, white);
             white = new Sdl.SDL_Color(255, 255, 255);
+            // preload images
+            imgInfo = new Image("imgs/InfoPanel.png", 800, 75);
+            imgInfo.MoveTo(0, 0);
+            imgFloor = new Image("imgs/Floor.png", 800, 700);
+            imgFloor.MoveTo(0, 75);
+            // preload level
+            level = new Level("levels/level1.txt");
+            
             //audio = new Audio(44100, 2, 4096);
             //audio.AddMusic("music/BombermanNES.mp3");
-            imgInfo.MoveTo(0, 0);
-            imgFloor.MoveTo(0, 75);
+
+            //initializing lives
             lives = 3;
         }
+
+        /*public string Time(ref int min, ref int sec)
+        {
+            sec--;
+            if (sec < 0 && min != 0)
+            {
+                min = min--;
+                sec = 59;
+            }
+            else if (min == 0 && sec < 0)
+                sec = 0;
+
+            return time = min + ":" + sec;
+        }*/
 
         public override void Show()
         {
             bool enterPressed = false;
             bool escPressed = false;
             level = new Level("levels/level1.txt");
+            
             //audio.PlayMusic(0, -1);
 
             do
@@ -42,8 +72,8 @@ namespace BomberMan
                 hardware.ClearScreen();
                 hardware.DrawImage(imgInfo);
                 hardware.DrawImage(imgFloor);
-                fontLives = SdlTtf.TTF_RenderText_Solid(font.GetFontType(),
-                                lives.ToString(), white);
+                //Time(ref min, ref sec);
+                hardware.WriteText(fontTime, 480, 40);
                 hardware.WriteText(fontLives, 158, 17);
                 foreach (Brick brick in level.Bricks)
                     hardware.DrawSprite(Sprite.spritesheet, (short)(brick.X - level.XMap), (short)(brick.Y - level.YMap), brick.SpriteX, brick.SpriteY, Sprite.SPRITE_WIDTH, Sprite.SPRITE_HEIGHT);
@@ -57,7 +87,7 @@ namespace BomberMan
                     escPressed = true;
                 }
             }
-            while (!escPressed && !enterPressed);
+            while (!escPressed && !enterPressed && Convert.ToInt32(time) == 0);
             
             //audio.StopMusic();
         }
