@@ -4,19 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BomberMan
+
+class Screen
 {
-    class Screen
+    protected Hardware hardware;
+
+    public Screen(Hardware hardware)
     {
-        protected Hardware hardware;
+        this.hardware = hardware;
+    }
 
-        public Screen(Hardware hardware)
-        {
-            this.hardware = hardware;
-        }
-
-        public virtual void Show()
-        {
-        }
+    public virtual void Show()
+    {
     }
 }

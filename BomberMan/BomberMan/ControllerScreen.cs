@@ -4,52 +4,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BomberMan
+class ControllerScreen : Screen
 {
-    class ControllerScreen : Screen
+    Image imgController/*,imgChosenOption*/;
+    //int chosenOption = 1;
+    Audio audio;
+    bool exit = false;
+
+    public ControllerScreen(Hardware hardware) : base(hardware)
     {
-        Image imgController/*,imgChosenOption*/;
-        //int chosenOption = 1;
-        Audio audio;
-        bool exit = false;
+        exit = false;
+        audio = new Audio(44100, 2, 4096);
+        audio.AddWAV("music/reset.wav");
+        imgController = new Image("imgs/SettingsScreen.png", 800, 700);
+        //imgChosenOption = new Image("imgs/BombMenu1.png", 50, 50);
+        imgController.MoveTo(0,0);
+        //imgChosenOption.MoveTo(240, 390);
+    }
 
-        public ControllerScreen(Hardware hardware) : base(hardware)
+    public override void Show()
+    {
+
+        bool enterPressed = false;
+        bool escPressed = false;
+        do
         {
-            exit = false;
-            audio = new Audio(44100, 2, 4096);
-            audio.AddWAV("music/reset.wav");
-            imgController = new Image("imgs/SettingsScreen.png", 800, 700);
-            //imgChosenOption = new Image("imgs/BombMenu1.png", 50, 50);
-            imgController.MoveTo(0,0);
-            //imgChosenOption.MoveTo(240, 390);
-        }
+            hardware.ClearScreen();
+            hardware.DrawImage(imgController);
+            //hardware.DrawImage(imgChosenOption);
+            hardware.UpdateScreen();
 
-        public override void Show()
-        {
-
-            bool enterPressed = false;
-            bool escPressed = false;
-            do
+            int keyPressed = hardware.KeyPressed();
+            if (keyPressed == Hardware.KEY_ESC)
             {
-                hardware.ClearScreen();
-                hardware.DrawImage(imgController);
-                //hardware.DrawImage(imgChosenOption);
-                hardware.UpdateScreen();
+                escPressed = true;
+                exit = false;
+            }
+            else if (keyPressed == Hardware.KEY_ENTER)
+            {
+                enterPressed = true;
+                exit = false;
+            }
 
-                int keyPressed = hardware.KeyPressed();
-                if (keyPressed == Hardware.KEY_ESC)
-                {
-                    escPressed = true;
-                    exit = false;
-                }
-                else if (keyPressed == Hardware.KEY_ENTER)
-                {
-                    enterPressed = true;
-                    exit = false;
-                }
-
-            } while (!escPressed && !enterPressed);
+        } while (!escPressed && !enterPressed);
             
-        }
     }
 }

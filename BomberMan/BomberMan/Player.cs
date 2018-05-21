@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BomberMan
+﻿abstract class Player : MovableSprite
 {
-    class Player
+    public const byte STEP_LENGTH = 4;
+    public ushort Lives { get; set; }
+
+    public Player()
     {
+        Lives = 3;
     }
 }

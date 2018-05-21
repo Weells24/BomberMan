@@ -1,14 +1,12 @@
 ﻿using System;
 using Tao.Sdl;
 
-namespace BomberMan
+class Bomberman
 {
-    class Bomberman
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            GameController controller = new GameController();
-            controller.Start();
-        }
+        GameController controller = new GameController();
+        controller.Start();
     }
 }
+

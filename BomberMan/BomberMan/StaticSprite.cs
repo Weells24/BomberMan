@@ -1,6 +1,4 @@
-﻿namespace BomberMan
+﻿class StaticSprite : Sprite
 {
-    class StaticSprite : Sprite
-    {
-    }
 }
+

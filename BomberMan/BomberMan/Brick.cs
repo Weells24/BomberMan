@@ -1,17 +1,15 @@
-﻿namespace BomberMan
+﻿class Brick : StaticSprite
 {
-    class Brick : StaticSprite
+    public Brick()
     {
-        public Brick()
-        {
-            SpriteX = 0;
-            SpriteY = 0;
-        }
-
-        public Brick(short x, short y) : this()
-        {
-            X = x;  
-            Y = y;
-        }
+        SpriteX = 0;
+        SpriteY = 0;
     }
+
+    public Brick(short x, short y) : this()
+    {
+        X = x;  
+        Y = y;
+    }
+
 }
