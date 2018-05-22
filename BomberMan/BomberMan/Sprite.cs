@@ -9,6 +9,10 @@ class Sprite
             
     public short X { get; set; }
     public short Y { get; set; }
+    public short SpriteXWhite { get; set; }
+    public short SpriteYWhite { get; set; }
+    public short SpriteXRed { get; set; }
+    public short SpriteYRed { get; set; }
     public short SpriteX { get; set; }
     public short SpriteY { get; set; }
 
@@ -20,8 +24,10 @@ class Sprite
         
     public bool CollidesWith(Sprite sp)
     {
-        return (X + Sprite.SPRITE_WIDTH > sp.X && X < sp.X + Sprite.SPRITE_WIDTH &&
-                Y + Sprite.SPRITE_HEIGHT > sp.Y && Y < sp.Y + Sprite.SPRITE_HEIGHT);
+        return (X + Sprite.SPRITE_WIDTH > sp.X && 
+                X < sp.X + Sprite.SPRITE_WIDTH && 
+                Y + Sprite.SPRITE_HEIGHT > sp.Y && 
+                Y < sp.Y + Sprite.SPRITE_HEIGHT);
     }
 
     public bool CollidesWith(List<Sprite> sprites)

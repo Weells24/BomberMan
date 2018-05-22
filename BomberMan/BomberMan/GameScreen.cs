@@ -4,13 +4,13 @@ using System.Threading;
 
 class GameScreen : Screen
 {
-    Player playerWhite;
+    Player playerWhite, playerRed;
     Image imgInfo, imgFloor;
     Font font36, font28;
     Level level;
     IntPtr fontLives, fontTime;
     Sdl.SDL_Color white;
-    int lives;
+    int lives = 3;
 
     public GameScreen(Hardware hardware) : base(hardware)
     {
@@ -31,12 +31,13 @@ class GameScreen : Screen
         // preload level
         level = new Level("levels/level1.txt");
         
-        
         playerWhite = new PlayerWhite();
+        playerRed = new PlayerRed();
     }
 
-    private void moveCharacter()
+    private void movePlayer()
     {
+        // Player White movement
         bool left = hardware.IsKeyPressed(Hardware.KEY_LEFT);
         bool right = hardware.IsKeyPressed(Hardware.KEY_RIGHT);
         bool up = hardware.IsKeyPressed(Hardware.KEY_UP);
@@ -80,13 +81,65 @@ class GameScreen : Screen
         }
 
         if (left)
-            playerWhite.Animate(MovableSprite.SpriteMovement.LEFT);
+            playerWhite.AnimateWhite(MovableSprite.SpriteMovementWhite.LEFT);
         else if (right)
-            playerWhite.Animate(MovableSprite.SpriteMovement.RIGHT);
+            playerWhite.AnimateWhite(MovableSprite.SpriteMovementWhite.RIGHT);
         else if (up)
-            playerWhite.Animate(MovableSprite.SpriteMovement.UP);
+            playerWhite.AnimateWhite(MovableSprite.SpriteMovementWhite.UP);
         else if (down)
-            playerWhite.Animate(MovableSprite.SpriteMovement.DOWN);
+            playerWhite.AnimateWhite(MovableSprite.SpriteMovementWhite.DOWN);     
+
+        // Player Red Movement
+        bool a = hardware.IsKeyPressed(Hardware.KEY_A);
+        bool d = hardware.IsKeyPressed(Hardware.KEY_D);
+        bool w = hardware.IsKeyPressed(Hardware.KEY_W);
+        bool s = hardware.IsKeyPressed(Hardware.KEY_S);
+
+        if (w)
+        {
+            if (playerRed.Y > 0)
+            {
+                playerRed.Y -= Player.STEP_LENGTH;
+                if (level.YMap > 0)
+                    level.YMap -= Player.STEP_LENGTH;
+            }
+        }
+        if (s)
+        {
+            if (playerRed.Y < level.Height - Sprite.SPRITE_HEIGHT)
+            {
+                playerRed.Y += Player.STEP_LENGTH;
+                if (level.YMap < level.Height - GameController.SCREEN_HEIGHT)
+                    level.YMap += Player.STEP_LENGTH;
+            }
+        }
+        if (a)
+        {
+            if (playerRed.X > 0)
+            {
+                playerRed.X -= Player.STEP_LENGTH;
+                if (level.XMap > 0)
+                    level.XMap -= Player.STEP_LENGTH;
+            }
+        }
+        if (d)
+        {
+            if (playerRed.X < level.Width - Sprite.SPRITE_WIDTH)
+            {
+                playerRed.X += Player.STEP_LENGTH;
+                if (level.XMap < level.Width - GameController.SCREEN_WIDTH)
+                    level.XMap += Player.STEP_LENGTH;
+            }
+        }
+
+        if (a)
+            playerRed.AnimateRed(MovableSprite.SpriteMovementRed.A);
+        else if (d)
+            playerRed.AnimateRed(MovableSprite.SpriteMovementRed.D);
+        else if (w)
+            playerRed.AnimateRed(MovableSprite.SpriteMovementRed.W);
+        else if (s)
+            playerRed.AnimateRed(MovableSprite.SpriteMovementRed.S);
     }
 
     public void DecreaseTime(Object o)
@@ -109,11 +162,13 @@ class GameScreen : Screen
 
     public override void Show()
     {
-        short oldX, oldY, oldXMap, oldYMap;
+        short oldXWhite, oldYWhite, oldXMapWhite, oldYMapWhite;
+        short oldXRed, oldYRed, oldXMapRed, oldYMapRed;
         bool enterPressed = false;
         bool escPressed = false;
         level = new Level("levels/level1.txt");
         playerWhite.MoveTo(40, 40);
+        playerRed.MoveTo(120, 120);
         var timer = new Timer(this.DecreaseTime, null, 1000, 1000);
 
         //audio.PlayMusic(0, -1);
@@ -126,11 +181,35 @@ class GameScreen : Screen
             hardware.DrawImage(imgFloor);
             hardware.WriteText(fontTime, 360, 700);
             hardware.WriteText(fontLives, 158, 700);
+
             foreach (Brick brick in level.Bricks)
-                hardware.DrawSprite(Sprite.spritesheet, (short)(brick.X - level.XMap), (short)(brick.Y - level.YMap), brick.SpriteX, brick.SpriteY, Sprite.SPRITE_WIDTH, Sprite.SPRITE_HEIGHT);
+                hardware.DrawSprite(Sprite.spritesheet, 
+                    (short)(brick.X - level.XMap), 
+                    (short)(brick.Y - level.YMap), 
+                    brick.SpriteX, brick.SpriteY, 
+                    Sprite.SPRITE_WIDTH, 
+                    Sprite.SPRITE_HEIGHT);
+
             foreach (BrickDestroyable bdes in level.BricksDestroyable)
-                hardware.DrawSprite(Sprite.spritesheet, (short)(bdes.X - level.XMap), (short)(bdes.Y - level.YMap), bdes.SpriteX, bdes.SpriteY, Sprite.SPRITE_WIDTH, Sprite.SPRITE_HEIGHT);
-            hardware.DrawSprite(Sprite.spritesheet, (short)(playerWhite.X - level.XMap), (short)(playerWhite.Y - level.YMap), playerWhite.SpriteX, playerWhite.SpriteY, Sprite.SPRITE_WIDTH, Sprite.SPRITE_HEIGHT);
+                hardware.DrawSprite(Sprite.spritesheet, 
+                    (short)(bdes.X - level.XMap), 
+                    (short)(bdes.Y - level.YMap), 
+                    bdes.SpriteX, bdes.SpriteY, 
+                    Sprite.SPRITE_WIDTH,
+                    Sprite.SPRITE_HEIGHT);
+
+            hardware.DrawSprite(Sprite.spritesheet, 
+                (short)(playerWhite.X - level.XMap), 
+                (short)(playerWhite.Y - level.YMap), 
+                playerWhite.SpriteXWhite, playerWhite.SpriteYWhite, 
+                Sprite.SPRITE_WIDTH, Sprite.SPRITE_HEIGHT);
+
+            hardware.DrawSprite(Sprite.spritesheet, 
+                (short)(playerRed.X - level.XMap), 
+                (short)(playerRed.Y - level.YMap), 
+                playerRed.SpriteXRed, playerRed.SpriteYRed, 
+                Sprite.SPRITE_WIDTH, Sprite.SPRITE_HEIGHT);
+
             hardware.UpdateScreen();
 
             int keyPressed = hardware.KeyPressed();
@@ -140,20 +219,37 @@ class GameScreen : Screen
             }
 
             // 2.  Move character from keyboard input
-            oldX = playerWhite.X;
-            oldY = playerWhite.Y;
-            oldXMap = level.XMap;
-            oldYMap = level.YMap;
-            moveCharacter();
+            // Coordinates Player White
+            oldXWhite = playerWhite.X;
+            oldYWhite = playerWhite.Y;
+            oldXMapWhite = level.XMap;
+            oldYMapWhite = level.YMap;
+
+            // Coordinates Player Red
+            oldXRed = playerRed.X;
+            oldYRed = playerRed.Y;
+            oldXMapRed = level.XMap;
+            oldYMapRed = level.YMap;
+
+            movePlayer();
 
             // 3.  Check collisions and update game state
             if (playerWhite.CollidesWith(level.Bricks) ||
                 playerWhite.CollidesWith(level.BricksDestroyable))
             {
-                playerWhite.X = oldX;
-                playerWhite.Y = oldY;
-                level.XMap = oldXMap;
-                level.YMap = oldYMap;
+                playerWhite.X = oldXWhite;
+                playerWhite.Y = oldYWhite;
+                level.XMap = oldXMapWhite;
+                level.YMap = oldYMapWhite;
+            }
+
+            if (playerRed.CollidesWith(level.Bricks) ||
+                playerRed.CollidesWith(level.BricksDestroyable))
+            {
+                playerRed.X = oldXRed;
+                playerRed.Y = oldYRed;
+                level.XMap = oldXMapRed;
+                level.YMap = oldYMapRed;
             }
 
             //Pause Game

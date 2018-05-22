@@ -16,6 +16,10 @@ class Hardware
     public const int KEY_LEFT = Sdl.SDLK_LEFT;
     public const int KEY_RIGHT = Sdl.SDLK_RIGHT;
     public const int KEY_SPACE = Sdl.SDLK_SPACE;
+    public const int KEY_A = Sdl.SDLK_a;
+    public const int KEY_S = Sdl.SDLK_s;
+    public const int KEY_W = Sdl.SDLK_w;
+    public const int KEY_D = Sdl.SDLK_d;
 
     short screenWidth;
     short screenHeight;
@@ -145,7 +149,9 @@ class Hardware
         Sdl.SDL_BlitSurface(textAsImage, ref src, screen, ref dest);
     }
 
-    // Writes a line in the specified coordinates, with the specified color and alpha
+    /* Writes a line in the specified coordinates, with the specified 
+     * color and alpha
+     */
     public void DrawLine(short x, short y, short x2, short y2, 
             byte r, byte g, byte b, byte alpha)
     {
